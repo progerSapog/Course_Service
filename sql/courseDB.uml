@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>717b5ec4-41f7-4493-88f2-06de8da7f84b</OriginalElement>
+  <nodes>
+    <node x="127.47629183793305" y="-211.85246686251105">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.skill</node>
+    <node x="470.22533763945967" y="-481.2160892542572">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_output_ability</node>
+    <node x="664.512184380505" y="-666.6113034566229">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.ability</node>
+    <node x="793.2170801526718" y="-481.2160892542572">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_input_ability</node>
+    <node x="1016.4874853200236" y="-316.2953611274222">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_input_knowledge</node>
+    <node x="1009.4874853200236" y="-101.61744362507727">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_output_knowledge</node>
+    <node x="324.2671021726366" y="-121.22783323546685">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_output_skill</node>
+    <node x="673.55791250734" y="-207.48091603053433">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course</node>
+    <node x="338.26710217263656" y="-282.6018790369936">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_input_skill</node>
+    <node x="1325.4170581327069" y="-248.26776277157956">717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.knowledge</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_output_ability" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course" relationship="REFERENCES">
+      <point x="55.75" y="-41.0" />
+      <point x="637.4753376394597" y="-303.3485026423958" />
+      <point x="691.1019211595457" y="-303.3485026423958" />
+      <point x="-61.95599134779434" y="-16.928045562637806" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_input_ability" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course" relationship="REFERENCES">
+      <point x="-51.80782712999712" y="28.657662947739595" />
+      <point x="845.9092530226746" y="-299.51512096774195" />
+      <point x="816.9954795347119" y="-299.51512096774195" />
+      <point x="63.93756702737187" y="-40.303358163013996" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_output_skill" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course" relationship="REFERENCES">
+      <point x="50.75" y="-41.0" />
+      <point x="476.5171021726366" y="-80.22783323546685" />
+      <point x="656.9240582905934" y="-80.22783323546685" />
+      <point x="656.9240582905934" y="-137.10810810810804" />
+      <point x="-60.04850571034535" y="28.87280792242629" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_input_skill" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.skill" relationship="REFERENCES">
+      <point x="-47.25" y="-41.0" />
+      <point x="385.51710217263656" y="-261.81503229594864" />
+      <point x="206.97629183793305" y="-261.81503229594864" />
+      <point x="0.0" y="41.5" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_input_knowledge" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course" relationship="REFERENCES">
+      <point x="-62.5" y="-41.0" />
+      <point x="1078.9874853200236" y="-295.7953611274222" />
+      <point x="1063.5793220547173" y="-295.7953611274222" />
+      <point x="1063.5793220547173" y="-177.76159718144453" />
+      <point x="753.05791250734" y="-177.76159718144453" />
+      <point x="0.0" y="41.5" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_output_skill" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.skill" relationship="REFERENCES">
+      <point x="50.60823634555288" y="11.32642504358094" />
+      <point x="476.3753385181895" y="-74.17543929255446" />
+      <point x="206.97629183793305" y="-74.17543929255446" />
+      <point x="0.0" y="41.5" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_input_skill" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course" relationship="REFERENCES">
+      <point x="47.25" y="-41.0" />
+      <point x="480.01710217263656" y="-233.19495008808" />
+      <point x="649.9569167747652" y="-233.19495008808" />
+      <point x="649.9569167747652" y="-165.98091603053433" />
+      <point x="753.05791250734" y="-165.98091603053433" />
+      <point x="0.0" y="41.5" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_output_ability" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.ability" relationship="REFERENCES">
+      <point x="54.1901056369428" y="-35.73839154232883" />
+      <point x="635.9154432764025" y="-525.6358463726885" />
+      <point x="698.8344958394888" y="-525.6358463726885" />
+      <point x="-45.17768854101621" y="40.04160217639526" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_output_knowledge" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course" relationship="REFERENCES">
+      <point x="-66.0" y="-41.0" />
+      <point x="1075.4874853200236" y="-73.0967798042972" />
+      <point x="868.5569122401395" y="-73.0967798042972" />
+      <point x="868.5569122401395" y="-141.49536178107593" />
+      <point x="66.47302570682541" y="24.485554249458403" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_output_knowledge" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.knowledge" relationship="REFERENCES">
+      <point x="66.0" y="-41.0" />
+      <point x="1207.4874853200236" y="-60.61744362507727" />
+      <point x="1404.9170581327069" y="-60.61744362507727" />
+      <point x="0.0" y="41.5" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_input_knowledge" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.knowledge" relationship="REFERENCES">
+      <point x="62.5" y="-41.0" />
+      <point x="1203.9874853200236" y="-220.57142857142884" />
+      <point x="1404.9170581327069" y="-220.57142857142884" />
+      <point x="0.0" y="41.5" />
+    </edge>
+    <edge source="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.course_input_ability" target="717b5ec4-41f7-4493-88f2-06de8da7f84b.TABLE:d7ib2dfkt0eiju.public.ability" relationship="REFERENCES">
+      <point x="-52.25" y="-41.0" />
+      <point x="845.4670801526718" y="-521.5599025912526" />
+      <point x="799.4904392121313" y="-521.5599025912526" />
+      <point x="55.47825483162626" y="39.99134377920359" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.7139072847682114" showDependencies="false" x="867.1561701251117" y="-114.83673469387736" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+
