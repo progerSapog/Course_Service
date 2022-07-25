@@ -1,14 +1,25 @@
 package Databases.Models.Dao
 
 import Databases.Configurations.{ASC, Id}
-import Databases.Models.Dao.AbilityEntity.a
-import Databases.Models.Dao.KnowledgeEntity.k
+import Databases.Models.Dao.LinkTables.CourseInputAbility.{cia, ciaC}
+import Databases.Models.Dao.LinkTables.CourseInputKnowledge.{cik, cikC}
+import Databases.Models.Dao.LinkTables.{CourseInputAbility, CourseInputKnowledge, CourseInputSkill, CourseOutputAbility, CourseOutputKnowledge, CourseOutputSkill}
+import Databases.Models.Dao.LinkTables.CourseInputSkill.{cis, cisC}
+import Databases.Models.Dao.LinkTables.CourseOutputAbility.{coa, coaC}
+import Databases.Models.Dao.LinkTables.CourseOutputKnowledge.{cok, cokC}
+import Databases.Models.Dao.LinkTables.CourseOutputSkill.{cos, cosC}
+import Databases.Models.Dao.Plugs.AbilityPlug.a
+import Databases.Models.Dao.Plugs.CoursePlug.{c, cC}
+import Databases.Models.Dao.Plugs.KnowledgePlug.k
+import Databases.Models.Dao.Plugs.SkillPlug.s
+import Databases.Models.Dao.Plugs.{AbilityPlug, CoursePlug, KnowledgePlug, SkillPlug}
 import scalikejdbc._
 
 import java.util.UUID
 
 /**
- * Отображение таблицы course
+ * Сущность Курс (course).
+ * Содержит связанные с данным курсом Kass
  *
  * @param id              столбец id (UUID)
  * @param name            столбец name (VARCHAR(255))
@@ -33,183 +44,12 @@ case class CourseEntity(id: UUID,
 /**
  * Объект компаньон, выполняющий роль DAO.
  * Реализует стандартные CRUD операции
+ * Позвоялет работать с данным отображением при помощи type safe DSL
  *
  * @see ICourseDao
  * @see UUIDFactory
  */
-object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
-
-  import Databases.Models.Dao.CourseEntity.CourseInputAbility.{cia, ciaC}
-  import Databases.Models.Dao.CourseEntity.CourseInputKnowledge.{cik, cikC}
-  import Databases.Models.Dao.CourseEntity.CourseInputSkill.{cis, cisC}
-  import Databases.Models.Dao.CourseEntity.CourseOutputAbility.{coa, coaC}
-  import Databases.Models.Dao.CourseEntity.CourseOutputKnowledge.{cok, cokC}
-  import Databases.Models.Dao.CourseEntity.CourseOutputSkill.{cos, cosC}
-  import Databases.Models.Dao.CourseEntity.CoursePlug.cp
-
-  /**
-   * Класс промежуточного представления курса, содержит только id и name
-   *
-   * Объект компаньон, позволяющий работать с данным отображением при помощи
-   * type safe DSL
-   *
-   * @param id   столбец id (UUID)
-   * @param name столбец name (VARCHAR(255))
-   */
-  private case class CoursePlug(id: UUID, name: String) extends IPlug
-
-  private object CoursePlug extends SQLSyntaxSupport[CoursePlug] {
-    val cp: QuerySQLSyntaxProvider[SQLSyntaxSupport[CoursePlug], CoursePlug] = CoursePlug.syntax("cp")
-    override val schemaName: Some[String] = Some("courses")
-    override val tableName = "course"
-
-    def apply(r: ResultName[CoursePlug])(rs: WrappedResultSet): CoursePlug =
-      new CoursePlug(
-        id = UUID.fromString(rs.get(r.id)),
-        name = rs.string(r.name)
-      )
-  }
-
-  /**
-   * Маппер из CoursePlug в CourseEntity
-   */
-  private object CoursePlugMapper {
-    /**
-     * Перевод из CoursePlug в CourseEntity.
-     * Дополняет данные из CoursePlug связанными с данными курсом KAS
-     *
-     * @param plug      который будет переведен
-     * @param dbSession имплисит, позволяющий вызывать метод внутри сессии
-     * @return полученный CourseEntity
-     */
-    def plug2Entity(plug: CoursePlug)(implicit dbSession: DBSession): CourseEntity = {
-      CourseEntity(
-        id = plug.id,
-        name = plug.name,
-        inputSkills = selectInputSkills(plug),
-        outputSkills = selectOutputSkills(plug),
-        inputAbilities = selectInputAbilities(plug),
-        outputAbilities = selectOutputAbilities(plug),
-        inputKnowledge = selectInputKnowledge(plug),
-        outputKnowledge = selectOutputKnowledge(plug)
-      )
-    }
-  }
-
-  /**
-   * Представление таблицы связи course_input_skill
-   *
-   * Объект компаньон, позволяющий работать с данным отображением при помощи
-   * type safe DSL
-   *
-   * @param courseId id курса
-   * @param skillId  id входного курса
-   */
-  private case class CourseInputSkill(courseId: UUID, skillId: UUID)
-
-  private object CourseInputSkill extends SQLSyntaxSupport[CourseInputSkill] {
-    override val schemaName: Some[String] = Some("courses")
-    override val tableName = "course_input_skill"
-    val cis: QuerySQLSyntaxProvider[SQLSyntaxSupport[CourseInputSkill], CourseInputSkill] = CourseInputSkill.syntax("c_i_s")
-    val cisC: ColumnName[CourseInputSkill] = CourseInputSkill.column
-  }
-
-  /**
-   * Представление таблицы связи course_output_skill
-   *
-   * Объект компаньон, позволяющий работать с данным отображением при помощи
-   * type safe DSL
-   *
-   * @param courseId id курса
-   * @param skillId  id выходного курса
-   */
-  private case class CourseOutputSkill(courseId: UUID, skillId: UUID)
-
-  private object CourseOutputSkill extends SQLSyntaxSupport[CourseOutputSkill] {
-    override val schemaName: Some[String] = Some("courses")
-    override val tableName = "course_output_skill"
-    val cos: QuerySQLSyntaxProvider[SQLSyntaxSupport[CourseOutputSkill], CourseOutputSkill] = CourseOutputSkill.syntax("c_o_s")
-    val cosC: ColumnName[CourseOutputSkill] = CourseOutputSkill.column
-  }
-
-  /**
-   * Представление таблицы связи course_input_ability
-   *
-   * Объект компаньон, позволяющий работать с данным отображением при помощи
-   * type safe DSL
-   *
-   * @param courseId  id курса
-   * @param abilityId id входного умения
-   */
-  private case class CourseInputAbility(courseId: UUID, abilityId: UUID)
-
-  private object CourseInputAbility extends SQLSyntaxSupport[CourseInputAbility] {
-    override val schemaName: Some[String] = Some("courses")
-    override val tableName = "course_input_ability"
-    val cia: QuerySQLSyntaxProvider[SQLSyntaxSupport[CourseInputAbility], CourseInputAbility] = CourseInputAbility.syntax("c_i_a")
-    val ciaC: ColumnName[CourseInputAbility] = CourseInputAbility.column
-  }
-
-  /**
-   * Представление таблицы связи course_output_ability
-   *
-   * Объект компаньон, позволяющий работать с данным отображением при помощи
-   * type safe DSL
-   *
-   * @param courseId  id курса
-   * @param abilityId id выходного умения
-   */
-  private case class CourseOutputAbility(courseId: UUID, abilityId: UUID)
-
-  private object CourseOutputAbility extends SQLSyntaxSupport[CourseOutputAbility] {
-    override val schemaName: Some[String] = Some("courses")
-    override val tableName = "course_output_ability"
-    val coa: QuerySQLSyntaxProvider[SQLSyntaxSupport[CourseOutputAbility], CourseOutputAbility] = CourseOutputAbility.syntax("c_o_a")
-    val coaC: ColumnName[CourseOutputAbility] = CourseOutputAbility.column
-  }
-
-  /**
-   * Представление таблицы связи course_input_knowledge
-   *
-   * Объект компаньон, позволяющий работать с данным отображением при помощи
-   * type safe DSL
-   *
-   * @param courseId    id курса
-   * @param knowledgeId id входного знания
-   */
-  private case class CourseInputKnowledge(courseId: UUID, knowledgeId: UUID)
-
-  private object CourseInputKnowledge extends SQLSyntaxSupport[CourseInputKnowledge] {
-    override val schemaName: Some[String] = Some("courses")
-    override val tableName = "course_input_knowledge"
-    val cik: QuerySQLSyntaxProvider[SQLSyntaxSupport[CourseInputKnowledge], CourseInputKnowledge] = CourseInputKnowledge.syntax("c_i_k")
-    val cikC: ColumnName[CourseInputKnowledge] = CourseInputKnowledge.column
-  }
-
-  /**
-   * Представление таблицы связи course_output_knowledge
-   *
-   * Объект компаньон, позволяющий работать с данным отображением при помощи
-   * type safe DSL
-   *
-   * @param courseId    id курса
-   * @param knowledgeId id выходного знания
-   */
-  private case class CourseOutputKnowledge(courseId: UUID, knowledgeId: UUID)
-
-  private object CourseOutputKnowledge extends SQLSyntaxSupport[CourseOutputKnowledge] {
-    override val schemaName: Some[String] = Some("courses")
-    override val tableName = "course_output_knowledge"
-    val cok: QuerySQLSyntaxProvider[SQLSyntaxSupport[CourseOutputKnowledge], CourseOutputKnowledge] = CourseOutputKnowledge.syntax("c_o_k")
-    val cokC: ColumnName[CourseOutputKnowledge] = CourseOutputKnowledge.column
-  }
-
-  override val schemaName: Some[String] = Some("courses")
-  override val tableName = "course"
-  var defaultDBName = "default"
-
-  val c: QuerySQLSyntaxProvider[SQLSyntaxSupport[CourseEntity], CourseEntity] = CourseEntity.syntax("c")
-  val cc: ColumnName[CourseEntity] = CourseEntity.column
+object CourseEntity extends ICourseDao {
 
   /**
    * Вставка связей курса и входных навыков в таблицу course_input_skill
@@ -350,12 +190,19 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
    */
   private def selectInputSkills(coursePlug: CoursePlug)
                                (implicit dbSession: DBSession): Seq[SkillEntity] = {
-    withSQL {
-      selectFrom(SkillEntity as sp)
-        .leftJoin(CourseInputSkill as cis)
-        .on(sp.id, cis.skillId)
-        .where.eq(cis.courseId, coursePlug.id)
-    }.map(SkillEntity(sp.resultName)).collection.apply()
+    val skillPlugs: Seq[SkillPlug] =
+      withSQL {
+        selectFrom(SkillPlug as s)
+          .leftJoin(CourseInputSkill as cis)
+          .on(s.id, cis.skillId)
+          .where.eq(cis.courseId, coursePlug.id)
+      }.map(SkillPlug(s.resultName)).collection.apply()
+
+    skillPlugs.map(plug => SkillEntity(
+      id = plug.id,
+      name = plug.name,
+      keyWords = SkillEntity.selectKeyWords(plug)
+    ))
   }
 
   /**
@@ -367,12 +214,19 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
    */
   private def selectOutputSkills(coursePlug: CoursePlug)
                                 (implicit dbSession: DBSession): Seq[SkillEntity] = {
-    withSQL {
-      selectFrom(SkillEntity as sp)
-        .leftJoin(CourseOutputSkill as cos)
-        .on(sp.id, cos.skillId)
-        .where.eq(cos.courseId, coursePlug.id)
-    }.map(SkillEntity(sp.resultName)).collection.apply()
+    val skillPlugs: Seq[SkillPlug] =
+      withSQL {
+        selectFrom(SkillPlug as s)
+          .leftJoin(CourseOutputSkill as cos)
+          .on(s.id, cos.skillId)
+          .where.eq(cos.courseId, coursePlug.id)
+      }.map(SkillPlug(s.resultName)).collection.apply()
+
+    skillPlugs.map(plug => SkillEntity(
+      id = plug.id,
+      name = plug.name,
+      keyWords = SkillEntity.selectKeyWords(plug)
+    ))
   }
 
   /**
@@ -384,12 +238,19 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
    */
   private def selectInputAbilities(coursePlug: CoursePlug)
                                   (implicit dbSession: DBSession): Seq[AbilityEntity] = {
-    withSQL {
-      selectFrom(AbilityEntity as a)
-        .leftJoin(CourseInputAbility as cia)
-        .on(a.id, cia.abilityId)
-        .where.eq(cia.courseId, coursePlug.id)
-    }.map(AbilityEntity(a.resultName)).collection.apply()
+    val abilityPlugs: Seq[AbilityPlug] =
+      withSQL {
+        selectFrom(AbilityPlug as a)
+          .leftJoin(CourseInputAbility as cia)
+          .on(a.id, cia.abilityId)
+          .where.eq(cia.courseId, coursePlug.id)
+      }.map(AbilityPlug(a.resultName)).collection.apply()
+
+    abilityPlugs.map(plug => AbilityEntity(
+      id = plug.id,
+      name = plug.name,
+      keyWords = AbilityEntity.selectKeyWords(plug)
+    ))
   }
 
   /**
@@ -401,12 +262,19 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
    */
   private def selectOutputAbilities(coursePlug: CoursePlug)
                                    (implicit dbSession: DBSession): Seq[AbilityEntity] = {
-    withSQL {
-      selectFrom(AbilityEntity as a)
-        .leftJoin(CourseOutputAbility as coa)
-        .on(a.id, coa.abilityId)
-        .where.eq(coa.courseId, coursePlug.id)
-    }.map(AbilityEntity(a.resultName)).collection.apply()
+    val abilityPlugs: Seq[AbilityPlug] =
+      withSQL {
+        selectFrom(AbilityPlug as a)
+          .leftJoin(CourseOutputAbility as coa)
+          .on(a.id, coa.abilityId)
+          .where.eq(coa.courseId, coursePlug.id)
+      }.map(AbilityPlug(a.resultName)).collection.apply()
+
+    abilityPlugs.map(plug => AbilityEntity(
+      id = plug.id,
+      name = plug.name,
+      keyWords = AbilityEntity.selectKeyWords(plug)
+    ))
   }
 
   /**
@@ -418,12 +286,19 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
    */
   private def selectInputKnowledge(coursePlug: CoursePlug)
                                   (implicit dbSession: DBSession): Seq[KnowledgeEntity] = {
-    withSQL {
-      selectFrom(KnowledgeEntity as k)
-        .leftJoin(CourseInputKnowledge as cik)
-        .on(k.id, cik.knowledgeId)
-        .where.eq(cik.courseId, coursePlug.id)
-    }.map(KnowledgeEntity(k.resultName)).collection.apply()
+    val knowledgePlugs: Seq[KnowledgePlug] =
+      withSQL {
+        selectFrom(KnowledgePlug as k)
+          .leftJoin(CourseInputKnowledge as cik)
+          .on(k.id, cik.knowledgeId)
+          .where.eq(cik.courseId, coursePlug.id)
+      }.map(KnowledgePlug(k.resultName)).collection.apply()
+
+    knowledgePlugs.map(plug => KnowledgeEntity(
+      id = plug.id,
+      name = plug.name,
+      keyWords = KnowledgeEntity.selectKeyWords(plug)
+    ))
   }
 
   /**
@@ -435,13 +310,19 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
    */
   private def selectOutputKnowledge(coursePlug: CoursePlug)
                                    (implicit dbSession: DBSession): Seq[KnowledgeEntity] = {
+    val knowledgePlugs: Seq[KnowledgePlug] =
+      withSQL {
+        selectFrom(KnowledgePlug as k)
+          .leftJoin(CourseOutputKnowledge as cok)
+          .on(k.id, cok.knowledgeId)
+          .where.eq(cok.courseId, coursePlug.id)
+      }.map(KnowledgePlug(k.resultName)).collection.apply()
 
-    withSQL {
-      selectFrom(KnowledgeEntity as k)
-        .leftJoin(CourseOutputKnowledge as cok)
-        .on(k.id, cok.knowledgeId)
-        .where.eq(cok.courseId, coursePlug.id)
-    }.map(KnowledgeEntity(k.resultName)).collection.apply()
+    knowledgePlugs.map(plug => KnowledgeEntity(
+      id = plug.id,
+      name = plug.name,
+      keyWords = KnowledgeEntity.selectKeyWords(plug)
+    ))
   }
 
   /**
@@ -553,10 +434,10 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
   override def insert(entity: CourseEntity, dbName: String = defaultDBName): Unit = {
     NamedDB(s"$dbName") localTx { implicit session =>
       withSQL {
-        insertInto(CourseEntity)
+        insertInto(CoursePlug)
           .namedValues(
-            cc.id -> entity.id,
-            cc.name -> entity.name
+            cC.id -> entity.id,
+            cC.name -> entity.name
           )
       }.update.apply()
 
@@ -576,10 +457,10 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
 
     NamedDB(s"$dbName") localTx { implicit session =>
       withSQL {
-        insertInto(CourseEntity)
+        insertInto(CoursePlug)
           .namedValues(
-            cc.id -> sqls.?,
-            cc.name -> sqls.?
+            cC.id -> sqls.?,
+            cC.name -> sqls.?
           )
       }.batch(batchCourses: _*).apply()
 
@@ -598,11 +479,20 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
     NamedDB(s"$dbName") readOnly { implicit session =>
       val coursePlugOpt: Option[CoursePlug] =
         withSQL {
-          selectFrom(CoursePlug as cp)
-            .where.eq(cp.id, id)
-        }.map(CoursePlug(cp.resultName)).single.apply()
+          selectFrom(CoursePlug as c)
+            .where.eq(c.id, id)
+        }.map(CoursePlug(c.resultName)).single.apply()
 
-      coursePlugOpt.map(CoursePlugMapper.plug2Entity)
+      coursePlugOpt.map(plug => CourseEntity(
+        id = plug.id,
+        name = plug.name,
+        inputSkills = CourseEntity.selectInputSkills(plug),
+        outputSkills = CourseEntity.selectOutputSkills(plug),
+        inputAbilities = CourseEntity.selectInputAbilities(plug),
+        outputAbilities = CourseEntity.selectOutputAbilities(plug),
+        inputKnowledge = CourseEntity.selectInputKnowledge(plug),
+        outputKnowledge = CourseEntity.selectOutputKnowledge(plug)
+      ))
     }
   }
 
@@ -624,13 +514,22 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
     NamedDB(s"$dbName") readOnly { implicit session =>
       val coursePlugs: Seq[CoursePlug] =
         withSQL {
-          select.all(cp).from(CoursePlug as cp)
+          select.all(c).from(CoursePlug as c)
             .orderBy(orderBy).append(sort)
             .limit(limit)
             .offset(offset)
-        }.map(CoursePlug(cp.resultName)).collection.apply()
+        }.map(CoursePlug(c.resultName)).collection.apply()
 
-      coursePlugs.map(CoursePlugMapper.plug2Entity)
+      coursePlugs.map(plug => CourseEntity(
+        id = plug.id,
+        name = plug.name,
+        inputSkills = CourseEntity.selectInputSkills(plug),
+        outputSkills = CourseEntity.selectOutputSkills(plug),
+        inputAbilities = CourseEntity.selectInputAbilities(plug),
+        outputAbilities = CourseEntity.selectOutputAbilities(plug),
+        inputKnowledge = CourseEntity.selectInputKnowledge(plug),
+        outputKnowledge = CourseEntity.selectOutputKnowledge(plug)
+      ))
     }
   }
 
@@ -643,10 +542,10 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
   override def update(entity: CourseEntity, dbName: String = defaultDBName): Unit = {
     NamedDB(s"$dbName") localTx { implicit session =>
       withSQL {
-        QueryDSL.update(CourseEntity)
+        QueryDSL.update(CoursePlug)
           .set(
-            cc.name -> entity.name
-          ).where.eq(cc.id, entity.id)
+            cC.name -> entity.name
+          ).where.eq(cC.id, entity.id)
       }.update.apply()
 
       deleteKAS(entity)
@@ -664,7 +563,7 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
     NamedDB(s"$dbName") localTx { implicit session =>
       withSQL {
         deleteFrom(CoursePlug)
-          .where.eq(cc.id, id)
+          .where.eq(cC.id, id)
       }.update.apply()
     }
   }
@@ -703,7 +602,16 @@ object CourseEntity extends SQLSyntaxSupport[CourseEntity] with ICourseDao {
           name = course.string("name"))).collection.apply()
       }
 
-      coursePlugs.map(CoursePlugMapper.plug2Entity)
+      coursePlugs.map(plug => CourseEntity(
+        id = plug.id,
+        name = plug.name,
+        inputSkills = CourseEntity.selectInputSkills(plug),
+        outputSkills = CourseEntity.selectOutputSkills(plug),
+        inputAbilities = CourseEntity.selectInputAbilities(plug),
+        outputAbilities = CourseEntity.selectOutputAbilities(plug),
+        inputKnowledge = CourseEntity.selectInputKnowledge(plug),
+        outputKnowledge = CourseEntity.selectOutputKnowledge(plug)
+      ))
     }
   }
 }

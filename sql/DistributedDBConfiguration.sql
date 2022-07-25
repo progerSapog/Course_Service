@@ -572,7 +572,7 @@ BEGIN
                     RAISE EXCEPTION 'Impossible to build a trajectory based on SKILLS';
                 END IF;
 
-                -- Для каждого курса, полученного на данном шаге получаем входные Навыки(Skills)
+                -- Для каждого курса, полученного на данном шаге получаем входные Навыки(Skill)
                 -- и записываем их в следующий шаг
                 FOREACH tempCourse IN ARRAY (coursesByStep)
                     LOOP

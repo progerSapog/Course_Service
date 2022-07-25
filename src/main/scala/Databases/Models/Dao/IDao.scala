@@ -1,7 +1,8 @@
 package Databases.Models.Dao
 
 import Databases.Configurations.{ASC, Id}
-import scalikejdbc.ParameterBinderFactory
+import Databases.Models.Dao.Plugs.{AbilityPlug, IPlug, KnowledgePlug, SkillPlug}
+import scalikejdbc.{DBSession, ParameterBinderFactory}
 import scalikejdbc.interpolation.SQLSyntax
 
 import java.util.UUID
@@ -15,6 +16,8 @@ sealed trait IDao[EntityType <: IEntity] {
   implicit val uuidFactory: ParameterBinderFactory[UUID] = ParameterBinderFactory[UUID] {
     value => (stmt, idx) => stmt.setObject(idx, value)
   }
+
+  val defaultDBName = "default"
 
   /**
    * Получение всех Entity из таблицы
@@ -50,9 +53,9 @@ sealed trait IDao[EntityType <: IEntity] {
   def insert(entity: EntityType, dbName: String): Unit
 
   /**
-   * Вставка сразу нескольких KAS в БД
+   * Вставка сразу нескольких KAS'ов в БД
    *
-   * @param entityList список KAS которые мы хотим вставить
+   * @param entityList список KAS'ов которые мы хотим вставить
    * @param dbName     имя БД с которой мы хотим работать
    */
   def insertMultiRows(entityList: Seq[EntityType], dbName: String): Unit
@@ -77,17 +80,45 @@ sealed trait IDao[EntityType <: IEntity] {
 trait ICourseDao extends IDao[CourseEntity]
 
 /**
- * DAO Трейты для ЗУНов
+ * DAO Трейты для KAS'ов
  *
- * @tparam IKASType тип KAS
+ * @tparam KASType тип KAS'а
  */
-sealed trait IKASDao[IKASType <: IKASEntity] extends IDao[IKASType]
+sealed trait IKASDao[KASType <: IKASEntity, PlugType <: IPlug] extends IDao[KASType] {
+  /**
+   * Вставка связей KAS'а и ключевых слов в таблицу связи "имяKAS_keyword_link"
+   *
+   * @param kasEntity KAS для которого всталвяются связи с ключевыми слови
+   * @param dbSession имплисит, позволяющий вызывать метод внутри сессии
+   */
+  def insertKeyWord(kasEntity: KASType)
+                   (implicit dbSession: DBSession): Unit
 
-trait ISkillDao extends IKASDao[SkillEntity]
+  /**
+   * Выборка ключевых слов KAS'а через таблицу связи "имяKAS_keyword_link"
+   *
+   * @param plug      KAS для которого ищутся ключевые слова
+   * @param dbSession имплисит, позволяющий вызывать метод внутри сессии
+   * @return найденные входные навыки
+   */
+  def selectKeyWords(plug: PlugType)
+                    (implicit dbSession: DBSession): Seq[IKeyWordEntity]
 
-trait IAbilityDao extends IKASDao[AbilityEntity]
+  /**
+   * Удаление связей KAS'а и ключевых слов из таблицы связи "имяKAS_keyword_link"
+   *
+   * @param kasEntity KAS, связи с котором будут удалены
+   * @param dbSession имплисит, позволяющий вызывать метод внутри сессии
+   */
+  def deleteKeyWords(kasEntity: KASType)
+                    (implicit dbSession: DBSession): Unit
+}
 
-trait IKnowledgeDao extends IKASDao[KnowledgeEntity]
+trait IKnowledgeDao extends IKASDao[KnowledgeEntity, KnowledgePlug]
+
+trait IAbilityDao extends IKASDao[AbilityEntity, AbilityPlug]
+
+trait ISkillDao extends IKASDao[SkillEntity, SkillPlug]
 
 
 /**

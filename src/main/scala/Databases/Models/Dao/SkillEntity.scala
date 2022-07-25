@@ -1,13 +1,18 @@
 package Databases.Models.Dao
 
 import Databases.Configurations.{ASC, Id}
+import Databases.Models.Dao.LinkTables.SkillKeyWordLink
+import Databases.Models.Dao.LinkTables.SkillKeyWordLink.{skwl, skwlC}
+import Databases.Models.Dao.Plugs.SkillPlug
+import Databases.Models.Dao.Plugs.SkillPlug.{s, sC}
 import Databases.Models.Dao.SkillKeyWordEntity.skw
 import scalikejdbc._
 
 import java.util.UUID
 
 /**
- * Отображение таблицы skill - Навык
+ * Сущность Навык (skill)
+ * Содержит связанные с данным навыком ключевые слова
  *
  * @param id   столбец id (UUID)
  * @param name столбец name (VARCHAR(255))
@@ -25,138 +30,68 @@ case class SkillEntity(id: UUID,
  * @see ISkillDao
  * @see UUIDFactory
  */
-object SkillEntity extends SQLSyntaxSupport[SkillEntity] with ISkillDao {
-
-  import Databases.Models.Dao.SkillEntity.SkillKeyWordLink.{skwl, skwlC}
-  import Databases.Models.Dao.SkillEntity.SkillPlug.sp
+object SkillEntity extends ISkillDao {
 
   /**
-   * Класс промежуточного представления Навыка, содержит только id и name
-   *
-   * @param id   столбец id (UUID)
-   * @param name столбец name (VARCHAR(255))
-   */
-  private case class SkillPlug(id: UUID, name: String) extends IPlug
-
-  private object SkillPlug extends SQLSyntaxSupport[SkillPlug] {
-    val sp: QuerySQLSyntaxProvider[SQLSyntaxSupport[SkillPlug], SkillPlug] = SkillPlug.syntax("sp")
-    override val schemaName: Some[String] = Some("courses")
-    override val tableName = "skill"
-
-    def apply(r: ResultName[SkillPlug])(rs: WrappedResultSet): SkillPlug =
-      new SkillPlug(
-        id = UUID.fromString(rs.get(r.id)),
-        name = rs.string(r.name)
-      )
-  }
-
-  /**
-   * Маппер из SkillPlug в SkillEntity
-   */
-  private object SkillPlugMapper {
-    /**
-     * Перевод из SkillPlug в SkillEntity.
-     * Дополняет данные из SkillPlug связанными с навыком ключевыми словами
-     *
-     * @param plug      навык который будет переведен
-     * @param dbSession имплисит, позволяющий вызывать метод внутри сессии
-     * @return полученный CourseEntity
-     */
-    def plug2Entity(plug: SkillPlug)
-                   (implicit dbSession: DBSession): SkillEntity = {
-      SkillEntity(
-        id = plug.id,
-        name = plug.name,
-        keyWords = selectKeyWords(plug)
-      )
-    }
-  }
-
-  /**
-   * Представление таблицы связи skill_keyword_link
-   *
-   * Объект компаньон, позволяющий работать с данным отображением при помощи
-   * type safe DSL
-   *
-   * @param skillId   id навыка
-   * @param keywordId id ключевого слова
-   */
-  private case class SkillKeyWordLink(skillId: UUID, keywordId: UUID)
-
-  private object SkillKeyWordLink extends SQLSyntaxSupport[SkillKeyWordLink] {
-    override val schemaName: Some[String] = Some("courses")
-    override val tableName = "skill_keyword_link"
-    val skwl: QuerySQLSyntaxProvider[SQLSyntaxSupport[SkillKeyWordLink], SkillKeyWordLink] = SkillKeyWordLink.syntax("s_kw_l")
-    val skwlC: ColumnName[SkillKeyWordLink] = SkillKeyWordLink.column
-  }
-
-  override val schemaName: Some[String] = Some("courses")
-  override val tableName = "skill"
-  var defaultDBName = "default"
-
-  val s: QuerySQLSyntaxProvider[SQLSyntaxSupport[SkillEntity], SkillEntity] = SkillEntity.syntax("s")
-  val sC: ColumnName[SkillEntity] = SkillEntity.column
-
-  /**
-   * Вставка связей навыка и ключевых слов в таблицу skill_keyword_link
+   * Вставка связей Навыка и ключевых слов в таблицу связи skill_keyword_link
    *
    * @param skill     навык для которого ищутся ключевые слова
    * @param dbSession имплисит, позволяющий вызывать метод внутри сессии
    */
-  private def insertKeyWord(skill: SkillEntity)
-                           (implicit dbSession: DBSession): Unit = {
+  override def insertKeyWord(skill: SkillEntity)
+                            (implicit dbSession: DBSession): Unit = {
     val batchParams: Seq[Seq[Any]] = skill.keyWords.map(word => Seq(skill.id, word.id))
 
     withSQL {
       insertInto(SkillKeyWordLink)
         .namedValues(
-          skwlC.abilityId -> sqls.?,
+          skwlC.skillId -> sqls.?,
           skwlC.keywordId -> sqls.?
         )
     }.batch(batchParams: _*).apply()
   }
 
   /**
-   * Выборка ключевых слов навыка через skill_keyword_link
+   * Выборка ключевых слов Навыка через таблицу связи skill_keyword_link
    *
    * @param skillPlug навык для которого ищутся ключевые слова
    * @param dbSession имплисит, позволяющий вызывать метод внутри сессии
-   * @return найденные входные навыки
+   * @return найденные ключевые слова
    */
-  private def selectKeyWords(skillPlug: SkillPlug)
-                            (implicit dbSession: DBSession): Seq[SkillKeyWordEntity] = {
+  override def selectKeyWords(skillPlug: SkillPlug)
+                             (implicit dbSession: DBSession): Seq[SkillKeyWordEntity] = {
     withSQL {
       selectFrom(SkillKeyWordEntity as skw)
         .leftJoin(SkillKeyWordLink as skwl)
-        .on(skw.id, skwl.abilityId)
-        .where.eq(skwl.abilityId, skillPlug.id)
+        .on(skw.id, skwl.skillId)
+        .where.eq(skwl.skillId, skillPlug.id)
     }.map(SkillKeyWordEntity(skw.resultName)).collection.apply()
   }
 
   /**
    * Удаление связей навыка и ключевых слов из таблицы skill_keyword_link
    *
-   * @param skill     умение, связи с котором будут удалены
+   * @param skill     навык, связи с котором будут удалены
    * @param dbSession имплисит, позволяющий вызывать метод внутри сессии
    */
-  private def deleteKeyWords(skill: SkillEntity)
-                            (implicit dbSession: DBSession): Unit = {
+  override def deleteKeyWords(skill: SkillEntity)
+                             (implicit dbSession: DBSession): Unit = {
     withSQL {
       deleteFrom(SkillKeyWordLink)
-        .where.eq(skwlC.courseId, skill.id)
+        .where.eq(skwlC.skillId, skill.id)
     }.update.apply()
   }
 
   /**
    * Вставка навыка в БД
    *
-   * @param entity Entity которую необходимо вставить в таблицу
+   * @param entity Навык который необходимо вставить в таблицу
    * @param dbName - имя БД с которой мы хотим работать
    */
-  def insert(entity: SkillEntity, dbName: String = defaultDBName): Unit =
+  override def insert(entity: SkillEntity, dbName: String = defaultDBName): Unit =
     NamedDB(s"$dbName") localTx { implicit session =>
       withSQL {
-        insertInto(SkillEntity)
+        insertInto(SkillPlug)
           .namedValues(
             sC.id -> entity.id,
             sC.name -> entity.name
@@ -167,7 +102,7 @@ object SkillEntity extends SQLSyntaxSupport[SkillEntity] with ISkillDao {
     }
 
   /**
-   * Вставка сразу нескольких skills в БД
+   * Вставка сразу нескольких skill в БД
    *
    * @param skills список skills которые мы хотим вставить
    * @param dbName имя БД с которой мы хотим работать
@@ -177,7 +112,7 @@ object SkillEntity extends SQLSyntaxSupport[SkillEntity] with ISkillDao {
 
     NamedDB(s"$dbName") localTx { implicit session =>
       withSQL {
-        insertInto(SkillEntity)
+        insertInto(SkillPlug)
           .namedValues(
             sC.id -> sqls.?,
             sC.name -> sqls.?
@@ -189,21 +124,25 @@ object SkillEntity extends SQLSyntaxSupport[SkillEntity] with ISkillDao {
   }
 
   /**
-   * Получение навыка по id
+   * Получение Навыка по id
    *
-   * @param id     Entity которую необходимо получить
+   * @param id     Навык который необходимо получить
    * @param dbName имя БД с которой мы хотим работать
-   * @return Optional с Entity если такая есть в БД, иначе Option.empty
+   * @return Optional с Навыком
    */
-  def findById(id: UUID, dbName: String = defaultDBName): Option[SkillEntity] = {
+  override def findById(id: UUID, dbName: String = defaultDBName): Option[SkillEntity] = {
     NamedDB(s"$dbName") readOnly { implicit session =>
       val skillPlug: Option[SkillPlug] =
         withSQL {
-          select.from(SkillPlug as sp)
-            .where.eq(sp.id, id)
-        }.map(SkillPlug(sp.resultName)).single.apply()
+          select.from(SkillPlug as s)
+            .where.eq(s.id, id)
+        }.map(SkillPlug(s.resultName)).single.apply()
 
-      skillPlug.map(SkillPlugMapper.plug2Entity)
+      skillPlug.map(plug => SkillEntity(
+        id = plug.id,
+        name = plug.name,
+        keyWords = SkillEntity.selectKeyWords(plug))
+      )
     }
   }
 
@@ -217,7 +156,7 @@ object SkillEntity extends SQLSyntaxSupport[SkillEntity] with ISkillDao {
    * @param dbName  имя БД с которой мы хотим работать
    * @return последовательность всех Entity из таблицы
    */
-  def findAll(limit: Int = 100,
+  override def findAll(limit: Int = 100,
               offset: Int = 0,
               orderBy: SQLSyntax = Id.value,
               sort: SQLSyntax = ASC.value,
@@ -225,26 +164,30 @@ object SkillEntity extends SQLSyntaxSupport[SkillEntity] with ISkillDao {
     NamedDB(s"$dbName") readOnly { implicit session =>
       val skillPlugs: Seq[SkillPlug] =
         withSQL {
-          select.all(sp).from(SkillPlug as sp)
+          select.all(s).from(SkillPlug as s)
             .orderBy(orderBy).append(sort)
             .limit(limit)
             .offset(offset)
-        }.map(SkillPlug(sp.resultName)).collection.apply()
+        }.map(SkillPlug(s.resultName)).collection.apply()
 
-      skillPlugs.map(SkillPlugMapper.plug2Entity)
+      skillPlugs.map(plug => SkillEntity(
+        id = plug.id,
+        name = plug.name,
+        keyWords = SkillEntity.selectKeyWords(plug))
+      )
     }
   }
 
   /**
-   * Обновление записи о навыке
+   * Обновление записи о Навыке
    *
    * @param entity Entity которое будет обновлено
    * @param dbName имя БД с которой мы хотим работать
    */
-  def update(entity: SkillEntity, dbName: String = defaultDBName): Unit =
+  override def update(entity: SkillEntity, dbName: String = defaultDBName): Unit =
     NamedDB(s"$dbName") localTx { implicit session =>
       withSQL {
-        QueryDSL.update(SkillEntity)
+        QueryDSL.update(SkillPlug)
           .set(
             sC.name -> entity.name
           ).where.eq(sC.id, entity.id)
@@ -260,10 +203,10 @@ object SkillEntity extends SQLSyntaxSupport[SkillEntity] with ISkillDao {
    * @param id     Entity которую необходимо удалить
    * @param dbName имя БД с которой мы хотим работать
    */
-  def deleteById(id: UUID, dbName: String = defaultDBName): Unit =
+  override def deleteById(id: UUID, dbName: String = defaultDBName): Unit =
     NamedDB(s"$dbName") localTx { implicit session =>
       withSQL {
-        deleteFrom(SkillEntity)
+        deleteFrom(SkillPlug)
           .where.eq(sC.id, id)
       }.update.apply()
     }

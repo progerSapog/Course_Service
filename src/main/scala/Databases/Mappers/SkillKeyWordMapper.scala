@@ -1,4 +1,5 @@
 package Databases.Mappers
+
 import Databases.Models.Dao.SkillKeyWordEntity
 import Databases.Models.Domain.SkillKeyWord
 

@@ -23,7 +23,3 @@ trait IKASEntity extends IEntity {
  */
 trait IKeyWordEntity extends IEntity
 
-/**
- * Маркерный трейт для классов "пробок"
- */
-trait IPlug extends IEntity

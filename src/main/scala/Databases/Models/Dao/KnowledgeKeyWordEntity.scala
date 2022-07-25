@@ -6,7 +6,7 @@ import scalikejdbc._
 import java.util.UUID
 
 /**
- * Отображение таблицы knowledge_keyword - ключевые слова знаний
+ * Сущность Ключевое слово знания (knowledge_keyword)
  *
  * @param id   столбец id (UUID)
  * @param name столбец name (VARCHAR(255))
@@ -25,7 +25,6 @@ case class KnowledgeKeyWordEntity(id: UUID, name: String) extends IKeyWordEntity
 object KnowledgeKeyWordEntity extends SQLSyntaxSupport[KnowledgeKeyWordEntity] with IKnowledgeKeyWordDao {
   override val schemaName: Some[String] = Some("courses")
   override val tableName = "knowledge_keyword"
-  var defaultDBName = "default"
 
   val kkw: QuerySQLSyntaxProvider[SQLSyntaxSupport[KnowledgeKeyWordEntity], KnowledgeKeyWordEntity] = KnowledgeKeyWordEntity.syntax("kkw")
   val kkwc: ColumnName[KnowledgeKeyWordEntity] = KnowledgeKeyWordEntity.column
@@ -37,7 +36,7 @@ object KnowledgeKeyWordEntity extends SQLSyntaxSupport[KnowledgeKeyWordEntity] w
     )
 
   /**
-   * Вставка новой Entity в таблицу
+   * Вставка нового Ключевого слова в таблицу
    *
    * @param entity Entity которую необходимо вставить в таблицу
    * @param dbName - имя БД с которой мы хотим работать
@@ -54,12 +53,12 @@ object KnowledgeKeyWordEntity extends SQLSyntaxSupport[KnowledgeKeyWordEntity] w
     }
 
   /**
-   * Вставка сразу нескольких KAS в БД
+   * Вставка сразу нескольких Ключевых слов в БД
    *
    * @param keyWords список KAS которые мы хотим вставить
    * @param dbName   имя БД с которой мы хотим работать
    */
-  override def insertMultiRows(keyWords: Seq[KnowledgeKeyWordEntity], dbName: String): Unit = {
+  override def insertMultiRows(keyWords: Seq[KnowledgeKeyWordEntity], dbName: String = defaultDBName): Unit = {
     val batchParams: Seq[Seq[Any]] = keyWords.map(word => Seq(word.id, word.name))
 
     NamedDB(s"$dbName") localTx { implicit session =>
@@ -74,7 +73,7 @@ object KnowledgeKeyWordEntity extends SQLSyntaxSupport[KnowledgeKeyWordEntity] w
   }
 
   /**
-   * Получение всех Entity из таблицы
+   * Получение всех Ключевых слов из таблицы
    *
    * @param limit   кол-во записей которые необходимо получить
    * @param offset  отсутуп от начала полученных записей
@@ -98,7 +97,7 @@ object KnowledgeKeyWordEntity extends SQLSyntaxSupport[KnowledgeKeyWordEntity] w
     }
 
   /**
-   * Получение Entity из таблицы по id
+   * Получение Ключевого слова из таблицы по id
    *
    * @param id     Entity которую необходимо получить
    * @param dbName имя БД с которой мы хотим работать
@@ -113,7 +112,7 @@ object KnowledgeKeyWordEntity extends SQLSyntaxSupport[KnowledgeKeyWordEntity] w
     }
 
   /**
-   * Обновление Entity в таблице
+   * Обновление Ключевого слова в таблице
    *
    * @param entity Entity которое будет обновлено
    * @param dbName имя БД с которой мы хотим работать
@@ -129,7 +128,7 @@ object KnowledgeKeyWordEntity extends SQLSyntaxSupport[KnowledgeKeyWordEntity] w
     }
 
   /**
-   * Удаление Entity из таблицы по id
+   * Удаление Ключевого слова из таблицы по id
    *
    * @param id     Entity которую необходимо удалить
    * @param dbName имя БД с которой мы хотим работать

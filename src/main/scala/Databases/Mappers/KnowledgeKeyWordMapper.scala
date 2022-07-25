@@ -1,4 +1,5 @@
 package Databases.Mappers
+
 import Databases.Models.Dao.KnowledgeKeyWordEntity
 import Databases.Models.Domain.KnowledgeKeyWord
 
