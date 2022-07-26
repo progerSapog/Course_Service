@@ -10,12 +10,13 @@ lazy val root = (project in file("."))
 val scalikejdbcVersion = "4.0.0"
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.2.11" % Test,
   "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
+  "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % Test,
+  "org.scalatest" %% "scalatest" % "3.2.12" % Test,
+  "org.specs2" %% "specs2-core" % "4.16.0" % Test,
   "org.scalikejdbc" %% "scalikejdbc-interpolation" % scalikejdbcVersion,
   "org.scalikejdbc" %% "scalikejdbc-core" % scalikejdbcVersion,
-  "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % Test,
   "org.scalikejdbc" %% "scalikejdbc-config" % scalikejdbcVersion,
   "ch.qos.logback"  %  "logback-classic"   % "1.2.11",
-  "org.postgresql" % "postgresql" % "42.3.3"
+  "org.postgresql" % "postgresql" % "42.3.6"
 )

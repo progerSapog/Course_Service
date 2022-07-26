@@ -10,9 +10,9 @@ SET search_path TO courses;
 CREATE TABLE COURSE
 (
     id   UUID NOT NULL UNIQUE PRIMARY KEY,
-    name VARCHAR(255)
+    name VARCHAR(255) NOT NULL
 );
-SELECT create_distributed_table('course', 'id');
+SELECT create_distributed_table('courses.course', 'id');
 
 /*
     Таблица знаний: знание1, знание2 и тд.
@@ -21,9 +21,9 @@ SELECT create_distributed_table('course', 'id');
 CREATE TABLE KNOWLEDGE
 (
     id   UUID NOT NULL UNIQUE PRIMARY KEY,
-    name VARCHAR(255)
+    name VARCHAR(255) NOT NULL UNIQUE
 );
-SELECT create_reference_table('knowledge');
+SELECT create_reference_table('courses.knowledge');
 
 /*
     Таблица навыков Навыки: навык1, навык2 и тд.
@@ -31,7 +31,7 @@ SELECT create_reference_table('knowledge');
 CREATE TABLE SKILL
 (
     id   UUID NOT NULL UNIQUE PRIMARY KEY,
-    name VARCHAR(255)
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 -- Сделать таблицу НАВЫКОВ справочной (содержит по локальной коппи на каждом узле)
 SELECT create_reference_table('courses.skill');
@@ -44,7 +44,7 @@ SELECT create_reference_table('courses.skill');
 CREATE TABLE ABILITY
 (
     id   UUID NOT NULL UNIQUE PRIMARY KEY,
-    name VARCHAR(255)
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 -- Сделать таблицу УМЕНИЙ справочной (содержит по локальной коппи на каждом узле)
 SELECT create_reference_table('courses.ability');
@@ -206,7 +206,7 @@ ALTER TABLE course_output_ability
 CREATE TABLE KNOWLEDGE_KEYWORD
 (
     id   UUID NOT NULL UNIQUE PRIMARY KEY,
-    name VARCHAR(255)
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 -- Сделать таблицу курсов распредленной, столбец распределения - id
 SELECT create_reference_table('courses.knowledge_keyword');
@@ -243,7 +243,7 @@ ALTER TABLE knowledge_keyword_link
 CREATE TABLE ABILITY_KEYWORD
 (
     id   UUID NOT NULL UNIQUE PRIMARY KEY,
-    name VARCHAR(255)
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 -- Сделать таблицу курсов распредленной, столбец распределения - id
 SELECT create_reference_table('courses.ability_keyword');
@@ -280,7 +280,7 @@ ALTER TABLE ability_keyword_link
 CREATE TABLE SKILL_KEYWORD
 (
     id   UUID NOT NULL UNIQUE PRIMARY KEY,
-    name VARCHAR(255)
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 -- Сделать таблицу курсов распредленной, столбец распределения - id
 SELECT create_reference_table('courses.skill_keyword');

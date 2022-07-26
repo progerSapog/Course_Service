@@ -39,37 +39,33 @@ object KnowledgeKeyWordEntity extends SQLSyntaxSupport[KnowledgeKeyWordEntity] w
    * Вставка нового Ключевого слова в таблицу
    *
    * @param entity Entity которую необходимо вставить в таблицу
-   * @param dbName - имя БД с которой мы хотим работать
    */
-  override def insert(entity: KnowledgeKeyWordEntity, dbName: String): Unit =
-    NamedDB(s"$dbName") localTx { implicit session =>
-      withSQL {
-        insertInto(KnowledgeKeyWordEntity)
-          .namedValues(
-            kkwc.id -> entity.id,
-            kkwc.name -> entity.name
-          )
-      }.update.apply()
-    }
+  override def insert(entity: KnowledgeKeyWordEntity)
+                     (implicit session: DBSession): Unit =
+    withSQL {
+      insertInto(KnowledgeKeyWordEntity)
+        .namedValues(
+          kkwc.id -> entity.id,
+          kkwc.name -> entity.name
+        )
+    }.update.apply()
 
   /**
    * Вставка сразу нескольких Ключевых слов в БД
    *
    * @param keyWords список KAS которые мы хотим вставить
-   * @param dbName   имя БД с которой мы хотим работать
    */
-  override def insertMultiRows(keyWords: Seq[KnowledgeKeyWordEntity], dbName: String = defaultDBName): Unit = {
+  override def insertMultiRows(keyWords: Seq[KnowledgeKeyWordEntity])
+                              (implicit session: DBSession): Unit = {
     val batchParams: Seq[Seq[Any]] = keyWords.map(word => Seq(word.id, word.name))
 
-    NamedDB(s"$dbName") localTx { implicit session =>
-      withSQL {
-        insertInto(KnowledgeKeyWordEntity)
-          .namedValues(
-            kkwc.id -> sqls.?,
-            kkwc.name -> sqls.?
-          )
-      }.batch(batchParams: _*).apply()
-    }
+    withSQL {
+      insertInto(KnowledgeKeyWordEntity)
+        .namedValues(
+          kkwc.id -> sqls.?,
+          kkwc.name -> sqls.?
+        )
+    }.batch(batchParams: _*).apply()
   }
 
   /**
@@ -79,65 +75,59 @@ object KnowledgeKeyWordEntity extends SQLSyntaxSupport[KnowledgeKeyWordEntity] w
    * @param offset  отсутуп от начала полученных записей
    * @param orderBy поле по которому необходимо отсортировать записи
    * @param sort    порядок сортировки
-   * @param dbName  имя БД с которой мы хотим работать
    * @return последовательность всех Entity из таблицы
    */
   override def findAll(limit: Int,
                        offset: Int,
                        orderBy: SQLSyntax = Id.value,
-                       sort: SQLSyntax = ASC.value,
-                       dbName: String): Seq[KnowledgeKeyWordEntity] =
-    NamedDB(s"$dbName") readOnly { implicit session =>
-      withSQL {
-        select.all(kkw).from(KnowledgeKeyWordEntity as kkw)
-          .orderBy(orderBy).append(sort)
-          .limit(limit)
-          .offset(offset)
-      }.map(KnowledgeKeyWordEntity(kkw.resultName)).list.apply()
-    }
+                       sort: SQLSyntax = ASC.value)
+                      (implicit session: DBSession): Seq[KnowledgeKeyWordEntity] =
+    withSQL {
+      select.all(kkw).from(KnowledgeKeyWordEntity as kkw)
+        .orderBy(orderBy).append(sort)
+        .limit(limit)
+        .offset(offset)
+    }.map(KnowledgeKeyWordEntity(kkw.resultName)).list.apply()
+
 
   /**
    * Получение Ключевого слова из таблицы по id
    *
-   * @param id     Entity которую необходимо получить
-   * @param dbName имя БД с которой мы хотим работать
+   * @param id Entity которую необходимо получить
    * @return Optional с Entity если такая есть в БД, иначе Option.empty
    */
-  override def findById(id: UUID, dbName: String): Option[KnowledgeKeyWordEntity] =
-    NamedDB(s"$dbName") readOnly { implicit session =>
-      withSQL {
-        select.from(KnowledgeKeyWordEntity as kkw)
-          .where.eq(kkw.id, id)
-      }.map(KnowledgeKeyWordEntity(kkw.resultName)).single.apply()
-    }
+  override def findById(id: UUID)
+                       (implicit session: DBSession): Option[KnowledgeKeyWordEntity] =
+    withSQL {
+      select.from(KnowledgeKeyWordEntity as kkw)
+        .where.eq(kkw.id, id)
+    }.map(KnowledgeKeyWordEntity(kkw.resultName)).single.apply()
+
 
   /**
    * Обновление Ключевого слова в таблице
    *
    * @param entity Entity которое будет обновлено
-   * @param dbName имя БД с которой мы хотим работать
    */
-  override def update(entity: KnowledgeKeyWordEntity, dbName: String): Unit =
-    NamedDB(s"$dbName") localTx { implicit session =>
-      withSQL {
-        QueryDSL.update(KnowledgeKeyWordEntity)
-          .set(
-            kkwc.name -> entity.name
-          ).where.eq(kkwc.id, entity.id)
-      }.update.apply()
-    }
+  override def update(entity: KnowledgeKeyWordEntity)
+                     (implicit session: DBSession): Unit =
+    withSQL {
+      QueryDSL.update(KnowledgeKeyWordEntity)
+        .set(
+          kkwc.name -> entity.name
+        ).where.eq(kkwc.id, entity.id)
+    }.update.apply()
+
 
   /**
    * Удаление Ключевого слова из таблицы по id
    *
-   * @param id     Entity которую необходимо удалить
-   * @param dbName имя БД с которой мы хотим работать
+   * @param id Entity которую необходимо удалить
    */
-  override def deleteById(id: UUID, dbName: String): Unit =
-    NamedDB(s"$dbName") localTx { implicit session =>
-      withSQL {
-        deleteFrom(KnowledgeKeyWordEntity)
-          .where.eq(kkwc.id, id)
-      }.update.apply()
-    }
+  override def deleteById(id: UUID)
+                         (implicit session: DBSession): Unit =
+    withSQL {
+      deleteFrom(KnowledgeKeyWordEntity)
+        .where.eq(kkwc.id, id)
+    }.update.apply()
 }

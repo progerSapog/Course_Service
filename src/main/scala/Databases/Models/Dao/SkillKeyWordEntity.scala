@@ -39,37 +39,33 @@ object SkillKeyWordEntity extends SQLSyntaxSupport[SkillKeyWordEntity] with ISki
    * Вставка новой Ключевого слова в таблицу
    *
    * @param entity Entity которую необходимо вставить в таблицу
-   * @param dbName - имя БД с которой мы хотим работать
    */
-  override def insert(entity: SkillKeyWordEntity, dbName: String): Unit =
-    NamedDB(s"$dbName") localTx { implicit session =>
-      withSQL {
-        insertInto(SkillKeyWordEntity)
-          .namedValues(
-            skwc.id -> entity.id,
-            skwc.name -> entity.name
-          )
-      }.update.apply()
-    }
+  override def insert(entity: SkillKeyWordEntity)
+                     (implicit session: DBSession): Unit =
+    withSQL {
+      insertInto(SkillKeyWordEntity)
+        .namedValues(
+          skwc.id -> entity.id,
+          skwc.name -> entity.name
+        )
+    }.update.apply()
 
   /**
    * Вставка сразу нескольких Ключевых слов в БД
    *
    * @param keyWords список Ключевых слов которые мы хотим вставить
-   * @param dbName   имя БД с которой мы хотим работать
    */
-  override def insertMultiRows(keyWords: Seq[SkillKeyWordEntity], dbName: String = defaultDBName): Unit = {
+  override def insertMultiRows(keyWords: Seq[SkillKeyWordEntity])
+                              (implicit session: DBSession): Unit = {
     val batchParams: Seq[Seq[Any]] = keyWords.map(word => Seq(word.id, word.name))
 
-    NamedDB(s"$dbName") localTx { implicit session =>
-      withSQL {
-        insertInto(SkillKeyWordEntity)
-          .namedValues(
-            skwc.id -> sqls.?,
-            skwc.name -> sqls.?
-          )
-      }.batch(batchParams: _*).apply()
-    }
+    withSQL {
+      insertInto(SkillKeyWordEntity)
+        .namedValues(
+          skwc.id -> sqls.?,
+          skwc.name -> sqls.?
+        )
+    }.batch(batchParams: _*).apply()
   }
 
   /**
@@ -85,59 +81,51 @@ object SkillKeyWordEntity extends SQLSyntaxSupport[SkillKeyWordEntity] with ISki
   override def findAll(limit: Int,
                        offset: Int,
                        orderBy: SQLSyntax = Id.value,
-                       sort: SQLSyntax = ASC.value,
-                       dbName: String): Seq[SkillKeyWordEntity] =
-    NamedDB(s"$dbName") readOnly { implicit session =>
-      withSQL {
-        select.all(skw).from(SkillKeyWordEntity as skw)
-          .orderBy(orderBy).append(sort)
-          .limit(limit)
-          .offset(offset)
-      }.map(SkillKeyWordEntity(skw.resultName)).list.apply()
-    }
+                       sort: SQLSyntax = ASC.value)
+                      (implicit session: DBSession): Seq[SkillKeyWordEntity] =
+    withSQL {
+      select.all(skw).from(SkillKeyWordEntity as skw)
+        .orderBy(orderBy).append(sort)
+        .limit(limit)
+        .offset(offset)
+    }.map(SkillKeyWordEntity(skw.resultName)).list.apply()
 
   /**
    * Получение Ключевого слова из таблицы по id
    *
-   * @param id     Entity которую необходимо получить
-   * @param dbName имя БД с которой мы хотим работать
+   * @param id Entity которую необходимо получить
    * @return Optional с Entity если такая есть в БД, иначе Option.empty
    */
-  override def findById(id: UUID, dbName: String): Option[SkillKeyWordEntity] =
-    NamedDB(s"$dbName") readOnly { implicit session =>
-      withSQL {
-        select.from(SkillKeyWordEntity as skw)
-          .where.eq(skw.id, id)
-      }.map(SkillKeyWordEntity(skw.resultName)).single.apply()
-    }
+  override def findById(id: UUID)
+                       (implicit session: DBSession): Option[SkillKeyWordEntity] =
+    withSQL {
+      select.from(SkillKeyWordEntity as skw)
+        .where.eq(skw.id, id)
+    }.map(SkillKeyWordEntity(skw.resultName)).single.apply()
 
   /**
    * Обновление Ключевого слова в таблице
    *
    * @param entity Entity которое будет обновлено
-   * @param dbName имя БД с которой мы хотим работать
    */
-  override def update(entity: SkillKeyWordEntity, dbName: String): Unit =
-    NamedDB(s"$dbName") localTx { implicit session =>
-      withSQL {
-        QueryDSL.update(SkillKeyWordEntity)
-          .set(
-            skwc.name -> entity.name
-          ).where.eq(skwc.id, entity.id)
-      }.update.apply()
-    }
+  override def update(entity: SkillKeyWordEntity)
+                     (implicit session: DBSession): Unit =
+    withSQL {
+      QueryDSL.update(SkillKeyWordEntity)
+        .set(
+          skwc.name -> entity.name
+        ).where.eq(skwc.id, entity.id)
+    }.update.apply()
 
   /**
    * Удаление Ключевого слова из таблицы по id
    *
-   * @param id     Entity которую необходимо удалить
-   * @param dbName имя БД с которой мы хотим работать
+   * @param id Entity которую необходимо удалить
    */
-  override def deleteById(id: UUID, dbName: String): Unit =
-    NamedDB(s"$dbName") localTx { implicit session =>
-      withSQL {
-        deleteFrom(SkillKeyWordEntity)
-          .where.eq(skwc.id, id)
-      }.update.apply()
-    }
+  override def deleteById(id: UUID)
+                         (implicit session: DBSession): Unit =
+    withSQL {
+      deleteFrom(SkillKeyWordEntity)
+        .where.eq(skwc.id, id)
+    }.update.apply()
 }
