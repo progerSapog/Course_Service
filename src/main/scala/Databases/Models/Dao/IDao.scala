@@ -1,6 +1,8 @@
 package Databases.Models.Dao
 
 import Databases.Configurations.{ASC, Id}
+import Databases.Models.Dao.Kas.{AbilityEntity, KnowledgeEntity, SkillEntity}
+import Databases.Models.Dao.Keywords.{AbilityKeyWordEntity, KnowledgeKeyWordEntity, SkillKeyWordEntity}
 import Databases.Models.Dao.Plugs.{AbilityPlug, IPlug, KnowledgePlug, SkillPlug}
 import scalikejdbc.{DBSession, ParameterBinderFactory}
 import scalikejdbc.interpolation.SQLSyntax

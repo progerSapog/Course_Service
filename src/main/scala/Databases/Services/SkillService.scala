@@ -1,7 +1,7 @@
 //package Databases.Services
 //
 //import Databases.Mappers.SkillMapper
-//import Databases.Models.Dao.SkillEntity
+//import Databases.Models.Dao.Kas.SkillEntity
 //import Databases.Models.Domain.Skill
 //import scalikejdbc.interpolation.SQLSyntax
 //

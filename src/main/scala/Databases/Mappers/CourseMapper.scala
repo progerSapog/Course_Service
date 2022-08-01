@@ -1,5 +1,6 @@
 package Databases.Mappers
 
+import Databases.Mappers.Kas.{AbilityMapper, KnowledgeMapper, SkillMapper}
 import Databases.Models.Dao.CourseEntity
 import Databases.Models.Domain.Course
 

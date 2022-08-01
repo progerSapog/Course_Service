@@ -1,11 +1,13 @@
-package Databases.Models.Dao
+package Databases.Models.Dao.Kas
 
 import Databases.Configurations.{ASC, Id}
-import Databases.Models.Dao.KnowledgeKeyWordEntity.kkw
+import Databases.Models.Dao.Keywords.KnowledgeKeyWordEntity
+import Databases.Models.Dao.Keywords.KnowledgeKeyWordEntity.kkw
 import Databases.Models.Dao.LinkTables.KnowledgeKeyWordLink
 import Databases.Models.Dao.LinkTables.KnowledgeKeyWordLink.{kkwl, kkwlC}
 import Databases.Models.Dao.Plugs.KnowledgePlug
 import Databases.Models.Dao.Plugs.KnowledgePlug.{k, kC}
+import Databases.Models.Dao.{IKASEntity, IKnowledgeDao}
 import scalikejdbc._
 
 import java.util.UUID
@@ -62,7 +64,7 @@ object KnowledgeEntity extends IKnowledgeDao {
     withSQL {
       selectFrom(KnowledgeKeyWordEntity as kkw)
         .leftJoin(KnowledgeKeyWordLink as kkwl)
-        .on(kkw.id, kkwl.knowledgeId)
+        .on(kkw.id, kkwl.keywordId)
         .where.eq(kkwl.knowledgeId, knowledgePlug.id)
     }.map(KnowledgeKeyWordEntity(kkw.resultName)).collection.apply()
   }

@@ -1,14 +1,14 @@
-package Databases.Models.Dao
+package Databases.Models.Dao.Keywords
 
 import Databases.Configurations.{DESC, Name}
-import org.specs2.mutable.Specification
+import Databases.Models.IBeforeAfterAllDBInit
 import scalikejdbc.config.DBs
 import scalikejdbc.specs2.mutable.AutoRollback
 
 import java.sql.SQLException
 import java.util.UUID
 
-object SkillKeyWordEntityTest extends Specification {
+object SkillKeyWordEntityTest extends IBeforeAfterAllDBInit {
 
   sequential
   DBs.setup("default")
@@ -88,12 +88,14 @@ object SkillKeyWordEntityTest extends Specification {
   }
 
   "SkillKeyWord not created, because such name exists" in new AutoRollback {
+    val name = "SkillKeyword1"
+
     val keyWords: Seq[SkillKeyWordEntity] = Seq(
-      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword1"),
+      SkillKeyWordEntity(UUID.randomUUID(), name),
       SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword2"),
-      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword1"),
+      SkillKeyWordEntity(UUID.randomUUID(), name),
       SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword4"),
-      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword1"),
+      SkillKeyWordEntity(UUID.randomUUID(), name),
     )
 
     SkillKeyWordEntity.insertMultiRows(keyWords) must throwA[SQLException]
@@ -165,16 +167,16 @@ object SkillKeyWordEntityTest extends Specification {
 
   "select all SkillKeyWord with all parameters" in new AutoRollback {
     val keyWords: Seq[SkillKeyWordEntity] = Seq(
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword1"),
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword2"),
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword3"),
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword4"),
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword5"),
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword6"),
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword7"),
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword8"),
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword9"),
-     SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword10"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword1"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword2"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword3"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword4"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword5"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword6"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword7"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword8"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword9"),
+      SkillKeyWordEntity(UUID.randomUUID(), "SkillKeyword10"),
     )
 
     SkillKeyWordEntity.insertMultiRows(keyWords)

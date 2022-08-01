@@ -1,7 +1,7 @@
 //package Databases.Services
 //
 //import Databases.Mappers.AbilityMapper
-//import Databases.Models.Dao.AbilityEntity
+//import Databases.Models.Dao.Kas.AbilityEntity
 //import Databases.Models.Domain.Ability
 //import scalikejdbc.interpolation.SQLSyntax
 //

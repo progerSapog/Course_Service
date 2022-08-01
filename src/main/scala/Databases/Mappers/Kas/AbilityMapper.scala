@@ -1,6 +1,8 @@
-package Databases.Mappers
+package Databases.Mappers.Kas
 
-import Databases.Models.Dao.AbilityEntity
+import Databases.Mappers.IAbilityMapper
+import Databases.Mappers.Keywords.AbilityKeyWordMapper
+import Databases.Models.Dao.Kas.AbilityEntity
 import Databases.Models.Domain.Ability
 
 /**

@@ -1,7 +1,7 @@
 //package Databases.Services
 //
 //import Databases.Mappers.KnowledgeMapper
-//import Databases.Models.Dao.KnowledgeEntity
+//import Databases.Models.Dao.Kas.KnowledgeEntity
 //import Databases.Models.Domain.Knowledge
 //import scalikejdbc.interpolation.SQLSyntax
 //

@@ -1,11 +1,13 @@
-package Databases.Models.Dao
+package Databases.Models.Dao.Kas
 
 import Databases.Configurations.{ASC, Id}
-import Databases.Models.Dao.AbilityKeyWordEntity.akw
+import Databases.Models.Dao.Keywords.AbilityKeyWordEntity
+import Databases.Models.Dao.Keywords.AbilityKeyWordEntity.akw
 import Databases.Models.Dao.LinkTables.AbilityKeyWordLink
 import Databases.Models.Dao.LinkTables.AbilityKeyWordLink.{akwl, akwlC}
 import Databases.Models.Dao.Plugs.AbilityPlug
 import Databases.Models.Dao.Plugs.AbilityPlug.{a, aC}
+import Databases.Models.Dao.{IAbilityDao, IKASEntity}
 import scalikejdbc._
 
 import java.util.UUID
@@ -62,7 +64,7 @@ object AbilityEntity extends IAbilityDao {
     withSQL {
       selectFrom(AbilityKeyWordEntity as akw)
         .leftJoin(AbilityKeyWordLink as akwl)
-        .on(akw.id, akwl.abilityId)
+        .on(akw.id, akwl.keywordId)
         .where.eq(akwl.abilityId, abilityPlug.id)
     }.map(AbilityKeyWordEntity(akw.resultName)).collection.apply()
   }

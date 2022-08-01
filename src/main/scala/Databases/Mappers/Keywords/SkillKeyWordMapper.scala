@@ -1,6 +1,7 @@
-package Databases.Mappers
+package Databases.Mappers.Keywords
 
-import Databases.Models.Dao.SkillKeyWordEntity
+import Databases.Mappers.ISkillKeyWordMapper
+import Databases.Models.Dao.Keywords.SkillKeyWordEntity
 import Databases.Models.Domain.SkillKeyWord
 
 object SkillKeyWordMapper extends ISkillKeyWordMapper {

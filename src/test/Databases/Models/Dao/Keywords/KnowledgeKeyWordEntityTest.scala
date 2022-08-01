@@ -1,14 +1,14 @@
-package Databases.Models.Dao
+package Databases.Models.Dao.Keywords
 
 import Databases.Configurations.{DESC, Name}
-import org.specs2.mutable.Specification
+import Databases.Models.IBeforeAfterAllDBInit
 import scalikejdbc.config.DBs
 import scalikejdbc.specs2.mutable.AutoRollback
 
 import java.sql.SQLException
 import java.util.UUID
 
-object KnowledgeKeyWordEntityTest extends Specification {
+object KnowledgeKeyWordEntityTest extends IBeforeAfterAllDBInit {
 
   sequential
   DBs.setup("default")
@@ -88,12 +88,14 @@ object KnowledgeKeyWordEntityTest extends Specification {
   }
 
   "KnowledgeKeyWord not created, because such name exists" in new AutoRollback {
+    val name = "KnowledgeKeyword1"
+
     val keyWords: Seq[KnowledgeKeyWordEntity] = Seq(
-      KnowledgeKeyWordEntity(UUID.randomUUID(), "KnowledgeKeyword1"),
+      KnowledgeKeyWordEntity(UUID.randomUUID(), name),
       KnowledgeKeyWordEntity(UUID.randomUUID(), "KnowledgeKeyword2"),
-      KnowledgeKeyWordEntity(UUID.randomUUID(), "KnowledgeKeyword1"),
+      KnowledgeKeyWordEntity(UUID.randomUUID(), name),
       KnowledgeKeyWordEntity(UUID.randomUUID(), "KnowledgeKeyword4"),
-      KnowledgeKeyWordEntity(UUID.randomUUID(), "KnowledgeKeyword1"),
+      KnowledgeKeyWordEntity(UUID.randomUUID(), name),
     )
 
     KnowledgeKeyWordEntity.insertMultiRows(keyWords) must throwA[SQLException]

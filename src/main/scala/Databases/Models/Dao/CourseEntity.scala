@@ -1,6 +1,7 @@
 package Databases.Models.Dao
 
 import Databases.Configurations.{ASC, Id}
+import Databases.Models.Dao.Kas.{AbilityEntity, KnowledgeEntity, SkillEntity}
 import Databases.Models.Dao.LinkTables.CourseInputAbility.{cia, ciaC}
 import Databases.Models.Dao.LinkTables.CourseInputKnowledge.{cik, cikC}
 import Databases.Models.Dao.LinkTables.{CourseInputAbility, CourseInputKnowledge, CourseInputSkill, CourseOutputAbility, CourseOutputKnowledge, CourseOutputSkill}

@@ -1,5 +1,7 @@
 package Databases.Mappers
 
+import Databases.Models.Dao.Kas.{AbilityEntity, KnowledgeEntity, SkillEntity}
+import Databases.Models.Dao.Keywords.{AbilityKeyWordEntity, KnowledgeKeyWordEntity, SkillKeyWordEntity}
 import Databases.Models.Dao._
 import Databases.Models.Domain._
 

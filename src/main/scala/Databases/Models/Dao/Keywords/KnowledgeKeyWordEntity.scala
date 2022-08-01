@@ -1,6 +1,7 @@
-package Databases.Models.Dao
+package Databases.Models.Dao.Keywords
 
 import Databases.Configurations.{ASC, Id}
+import Databases.Models.Dao.{IKeyWordEntity, IKnowledgeKeyWordDao}
 import scalikejdbc._
 
 import java.util.UUID

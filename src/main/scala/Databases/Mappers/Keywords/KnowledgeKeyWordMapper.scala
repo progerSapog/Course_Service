@@ -1,6 +1,7 @@
-package Databases.Mappers
+package Databases.Mappers.Keywords
 
-import Databases.Models.Dao.KnowledgeKeyWordEntity
+import Databases.Mappers.IKnowledgeKeyWordMapper
+import Databases.Models.Dao.Keywords.KnowledgeKeyWordEntity
 import Databases.Models.Domain.KnowledgeKeyWord
 
 object KnowledgeKeyWordMapper extends IKnowledgeKeyWordMapper {

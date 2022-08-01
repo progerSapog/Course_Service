@@ -1,6 +1,8 @@
-package Databases.Mappers
+package Databases.Mappers.Kas
 
-import Databases.Models.Dao.KnowledgeEntity
+import Databases.Mappers.IKnowledgeMapper
+import Databases.Mappers.Keywords.KnowledgeKeyWordMapper
+import Databases.Models.Dao.Kas.KnowledgeEntity
 import Databases.Models.Domain.Knowledge
 
 /**

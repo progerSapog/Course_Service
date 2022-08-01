@@ -12,7 +12,6 @@ val scalikejdbcVersion = "4.0.0"
 libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc" % scalikejdbcVersion,
   "org.scalikejdbc" %% "scalikejdbc-test" % scalikejdbcVersion % Test,
-  "org.scalatest" %% "scalatest" % "3.2.12" % Test,
   "org.specs2" %% "specs2-core" % "4.16.0" % Test,
   "org.scalikejdbc" %% "scalikejdbc-interpolation" % scalikejdbcVersion,
   "org.scalikejdbc" %% "scalikejdbc-core" % scalikejdbcVersion,

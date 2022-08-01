@@ -1,11 +1,13 @@
-package Databases.Models.Dao
+package Databases.Models.Dao.Kas
 
 import Databases.Configurations.{ASC, Id}
+import Databases.Models.Dao.Keywords.SkillKeyWordEntity
+import Databases.Models.Dao.Keywords.SkillKeyWordEntity.skw
 import Databases.Models.Dao.LinkTables.SkillKeyWordLink
 import Databases.Models.Dao.LinkTables.SkillKeyWordLink.{skwl, skwlC}
 import Databases.Models.Dao.Plugs.SkillPlug
 import Databases.Models.Dao.Plugs.SkillPlug.{s, sC}
-import Databases.Models.Dao.SkillKeyWordEntity.skw
+import Databases.Models.Dao.{IKASEntity, ISkillDao}
 import scalikejdbc._
 
 import java.util.UUID
@@ -63,7 +65,7 @@ object SkillEntity extends ISkillDao {
     withSQL {
       selectFrom(SkillKeyWordEntity as skw)
         .leftJoin(SkillKeyWordLink as skwl)
-        .on(skw.id, skwl.skillId)
+        .on(skw.id, skwl.keywordId)
         .where.eq(skwl.skillId, skillPlug.id)
     }.map(SkillKeyWordEntity(skw.resultName)).collection.apply()
   }

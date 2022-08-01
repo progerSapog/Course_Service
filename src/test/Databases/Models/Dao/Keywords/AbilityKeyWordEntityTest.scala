@@ -1,17 +1,15 @@
-package Databases.Models.Dao
+package Databases.Models.Dao.Keywords
 
 import Databases.Configurations.{DESC, Name}
-import org.specs2.mutable.Specification
-import scalikejdbc.config.DBs
+import Databases.Models.IBeforeAfterAllDBInit
 import scalikejdbc.specs2.mutable.AutoRollback
 
 import java.sql.SQLException
 import java.util.UUID
 
-object AbilityKeyWordEntityTest extends Specification {
+object AbilityKeyWordEntityTest extends IBeforeAfterAllDBInit {
 
   sequential
-  DBs.setup("default")
 
   "AbilityKeyWord successfully created" in new AutoRollback {
     val keyWord: AbilityKeyWordEntity = AbilityKeyWordEntity(
@@ -66,7 +64,6 @@ object AbilityKeyWordEntityTest extends Specification {
     )
 
     AbilityKeyWordEntity.insertMultiRows(keyWords)
-
     val res: Seq[AbilityKeyWordEntity] = AbilityKeyWordEntity.findAll()
 
     assert(res.nonEmpty must beTrue)
@@ -88,12 +85,14 @@ object AbilityKeyWordEntityTest extends Specification {
   }
 
   "AbilityKeyWords not created, because such name exists" in new AutoRollback {
+    val name = "AbilityKeyword1"
+
     val keyWords: Seq[AbilityKeyWordEntity] = Seq(
-      AbilityKeyWordEntity(UUID.randomUUID(), "AbilityKeyword1"),
+      AbilityKeyWordEntity(UUID.randomUUID(), name),
       AbilityKeyWordEntity(UUID.randomUUID(), "AbilityKeyword2"),
-      AbilityKeyWordEntity(UUID.randomUUID(), "AbilityKeyword1"),
+      AbilityKeyWordEntity(UUID.randomUUID(), name),
       AbilityKeyWordEntity(UUID.randomUUID(), "AbilityKeyword4"),
-      AbilityKeyWordEntity(UUID.randomUUID(), "AbilityKeyword1"),
+      AbilityKeyWordEntity(UUID.randomUUID(), name),
     )
 
     AbilityKeyWordEntity.insertMultiRows(keyWords) must throwA[SQLException]
