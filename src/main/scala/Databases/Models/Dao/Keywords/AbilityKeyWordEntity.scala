@@ -94,7 +94,7 @@ object AbilityKeyWordEntity extends SQLSyntaxSupport[AbilityKeyWordEntity] with 
   /**
    * Получение Ключевого слова из таблицы по id
    *
-   * @param id     Ключевого слова которое необходимо получить
+   * @param id Ключевого слова которое необходимо получить
    * @return Optional с Ключевым словом если такая есть в БД.
    */
   override def findById(id: UUID)
@@ -123,7 +123,7 @@ object AbilityKeyWordEntity extends SQLSyntaxSupport[AbilityKeyWordEntity] with 
   /**
    * Удаление Ключевого слова из таблицы по id
    *
-   * @param id     Entity которую необходимо удалить
+   * @param id Entity которую необходимо удалить
    */
   override def deleteById(id: UUID)
                          (implicit session: DBSession): Unit =

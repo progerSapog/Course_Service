@@ -59,8 +59,8 @@ object AbilityEntity extends IAbilityDao {
    * @param session     имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные ключевые слова
    */
-  override def selectKeyWords(abilityPlug: AbilityPlug)
-                             (implicit session: DBSession): Seq[AbilityKeyWordEntity] = {
+  override def findKeyWords(abilityPlug: AbilityPlug)
+                           (implicit session: DBSession): Seq[AbilityKeyWordEntity] = {
     withSQL {
       selectFrom(AbilityKeyWordEntity as akw)
         .leftJoin(AbilityKeyWordLink as akwl)
@@ -139,7 +139,7 @@ object AbilityEntity extends IAbilityDao {
     abilityPlug.map(plug => AbilityEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = AbilityEntity.selectKeyWords(plug))
+      keyWords = AbilityEntity.findKeyWords(plug))
     )
   }
 
@@ -168,7 +168,7 @@ object AbilityEntity extends IAbilityDao {
     abilitiesPlugs.map(plug => AbilityEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = AbilityEntity.selectKeyWords(plug))
+      keyWords = AbilityEntity.findKeyWords(plug))
     )
   }
 

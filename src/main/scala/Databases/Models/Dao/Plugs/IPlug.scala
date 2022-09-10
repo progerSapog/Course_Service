@@ -1,8 +1,12 @@
 package Databases.Models.Dao.Plugs
 
-import Databases.Models.Dao.IEntity
+import java.util.UUID
 
 /**
  * Маркерный трейт для отображения таблиц сущностей (т.е. исключая таблицы связи).
  */
-trait IPlug extends IEntity
+trait IPlug {
+  val id: UUID
+  val name: String
+}
+

@@ -76,7 +76,6 @@ object SkillKeyWordEntity extends SQLSyntaxSupport[SkillKeyWordEntity] with ISki
    * @param offset  отсутуп от начала полученных записей
    * @param orderBy поле по которому необходимо отсортировать записи
    * @param sort    порядок сортировки
-   * @param dbName  имя БД с которой мы хотим работать
    * @return последовательность всех Entity из таблицы
    */
   override def findAll(limit: Int,

@@ -189,7 +189,7 @@ object CourseEntity extends ICourseDao {
    * @param session    имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные входные навыки
    */
-  private def selectInputSkills(coursePlug: CoursePlug)
+  private def findInputSkills(coursePlug: CoursePlug)
                                (implicit session: DBSession): Seq[SkillEntity] = {
     val skillPlugs: Seq[SkillPlug] =
       withSQL {
@@ -202,7 +202,7 @@ object CourseEntity extends ICourseDao {
     skillPlugs.map(plug => SkillEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = SkillEntity.selectKeyWords(plug)
+      keyWords = SkillEntity.findKeyWords(plug)
     ))
   }
 
@@ -213,7 +213,7 @@ object CourseEntity extends ICourseDao {
    * @param session    - имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные выходные навыки
    */
-  private def selectOutputSkills(coursePlug: CoursePlug)
+  private def findOutputSkills(coursePlug: CoursePlug)
                                 (implicit session: DBSession): Seq[SkillEntity] = {
     val skillPlugs: Seq[SkillPlug] =
       withSQL {
@@ -226,7 +226,7 @@ object CourseEntity extends ICourseDao {
     skillPlugs.map(plug => SkillEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = SkillEntity.selectKeyWords(plug)
+      keyWords = SkillEntity.findKeyWords(plug)
     ))
   }
 
@@ -237,7 +237,7 @@ object CourseEntity extends ICourseDao {
    * @param session    имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные входные умения
    */
-  private def selectInputAbilities(coursePlug: CoursePlug)
+  private def findInputAbilities(coursePlug: CoursePlug)
                                   (implicit session: DBSession): Seq[AbilityEntity] = {
     val abilityPlugs: Seq[AbilityPlug] =
       withSQL {
@@ -250,7 +250,7 @@ object CourseEntity extends ICourseDao {
     abilityPlugs.map(plug => AbilityEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = AbilityEntity.selectKeyWords(plug)
+      keyWords = AbilityEntity.findKeyWords(plug)
     ))
   }
 
@@ -261,7 +261,7 @@ object CourseEntity extends ICourseDao {
    * @param session    имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные выходные умения
    */
-  private def selectOutputAbilities(coursePlug: CoursePlug)
+  private def findOutputAbilities(coursePlug: CoursePlug)
                                    (implicit session: DBSession): Seq[AbilityEntity] = {
     val abilityPlugs: Seq[AbilityPlug] =
       withSQL {
@@ -274,7 +274,7 @@ object CourseEntity extends ICourseDao {
     abilityPlugs.map(plug => AbilityEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = AbilityEntity.selectKeyWords(plug)
+      keyWords = AbilityEntity.findKeyWords(plug)
     ))
   }
 
@@ -285,7 +285,7 @@ object CourseEntity extends ICourseDao {
    * @param session    имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные входные знания
    */
-  private def selectInputKnowledge(coursePlug: CoursePlug)
+  private def findInputKnowledge(coursePlug: CoursePlug)
                                   (implicit session: DBSession): Seq[KnowledgeEntity] = {
     val knowledgePlugs: Seq[KnowledgePlug] =
       withSQL {
@@ -298,7 +298,7 @@ object CourseEntity extends ICourseDao {
     knowledgePlugs.map(plug => KnowledgeEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = KnowledgeEntity.selectKeyWords(plug)
+      keyWords = KnowledgeEntity.findKeyWords(plug)
     ))
   }
 
@@ -309,7 +309,7 @@ object CourseEntity extends ICourseDao {
    * @param session    имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные входные знания
    */
-  private def selectOutputKnowledge(coursePlug: CoursePlug)
+  private def findOutputKnowledge(coursePlug: CoursePlug)
                                    (implicit session: DBSession): Seq[KnowledgeEntity] = {
     val knowledgePlugs: Seq[KnowledgePlug] =
       withSQL {
@@ -322,7 +322,7 @@ object CourseEntity extends ICourseDao {
     knowledgePlugs.map(plug => KnowledgeEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = KnowledgeEntity.selectKeyWords(plug)
+      keyWords = KnowledgeEntity.findKeyWords(plug)
     ))
   }
 
@@ -482,12 +482,12 @@ object CourseEntity extends ICourseDao {
     coursePlugOpt.map(plug => CourseEntity(
       id = plug.id,
       name = plug.name,
-      inputSkills = CourseEntity.selectInputSkills(plug),
-      outputSkills = CourseEntity.selectOutputSkills(plug),
-      inputAbilities = CourseEntity.selectInputAbilities(plug),
-      outputAbilities = CourseEntity.selectOutputAbilities(plug),
-      inputKnowledge = CourseEntity.selectInputKnowledge(plug),
-      outputKnowledge = CourseEntity.selectOutputKnowledge(plug)
+      inputSkills = CourseEntity.findInputSkills(plug),
+      outputSkills = CourseEntity.findOutputSkills(plug),
+      inputAbilities = CourseEntity.findInputAbilities(plug),
+      outputAbilities = CourseEntity.findOutputAbilities(plug),
+      inputKnowledge = CourseEntity.findInputKnowledge(plug),
+      outputKnowledge = CourseEntity.findOutputKnowledge(plug)
     ))
   }
 
@@ -516,12 +516,12 @@ object CourseEntity extends ICourseDao {
     coursePlugs.map(plug => CourseEntity(
       id = plug.id,
       name = plug.name,
-      inputSkills = CourseEntity.selectInputSkills(plug),
-      outputSkills = CourseEntity.selectOutputSkills(plug),
-      inputAbilities = CourseEntity.selectInputAbilities(plug),
-      outputAbilities = CourseEntity.selectOutputAbilities(plug),
-      inputKnowledge = CourseEntity.selectInputKnowledge(plug),
-      outputKnowledge = CourseEntity.selectOutputKnowledge(plug)
+      inputSkills = CourseEntity.findInputSkills(plug),
+      outputSkills = CourseEntity.findOutputSkills(plug),
+      inputAbilities = CourseEntity.findInputAbilities(plug),
+      outputAbilities = CourseEntity.findOutputAbilities(plug),
+      inputKnowledge = CourseEntity.findInputKnowledge(plug),
+      outputKnowledge = CourseEntity.findOutputKnowledge(plug)
     ))
   }
 
@@ -592,12 +592,12 @@ object CourseEntity extends ICourseDao {
     coursePlugs.map(plug => CourseEntity(
       id = plug.id,
       name = plug.name,
-      inputSkills = CourseEntity.selectInputSkills(plug),
-      outputSkills = CourseEntity.selectOutputSkills(plug),
-      inputAbilities = CourseEntity.selectInputAbilities(plug),
-      outputAbilities = CourseEntity.selectOutputAbilities(plug),
-      inputKnowledge = CourseEntity.selectInputKnowledge(plug),
-      outputKnowledge = CourseEntity.selectOutputKnowledge(plug)
+      inputSkills = CourseEntity.findInputSkills(plug),
+      outputSkills = CourseEntity.findOutputSkills(plug),
+      inputAbilities = CourseEntity.findInputAbilities(plug),
+      outputAbilities = CourseEntity.findOutputAbilities(plug),
+      inputKnowledge = CourseEntity.findInputKnowledge(plug),
+      outputKnowledge = CourseEntity.findOutputKnowledge(plug)
     ))
   }
 }

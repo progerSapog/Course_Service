@@ -165,50 +165,10 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
   }
 
   "Courses successfully created" in new AutoRollback {
-    val entities: Seq[CourseEntity] = Seq(
-      CourseEntity(
+    val entities: Seq[CourseEntity] = for (i <- 1 to 5)
+      yield CourseEntity(
         id = UUID.randomUUID(),
-        name = "Course1",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course2",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course3",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course4",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course5",
+        name = s"Course$i",
         inputSkills = inputSkills,
         outputSkills = outputSkills,
         inputAbilities = inputAbilities,
@@ -216,20 +176,6 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
         inputKnowledge = inputKnowledge,
         outputKnowledge = outputKnowledge
       )
-    )
-
-    //    for (i <- 1 to 5;
-    //         entities <- CourseEntity(
-    //           id = UUID.randomUUID(),
-    //           name = s"Course$i",
-    //           inputSkills = inputSkills,
-    //           outputSkills = outputSkills,
-    //           inputAbilities = inputAbilities,
-    //           outputAbilities = outputAbilities,
-    //           inputKnowledge = inputKnowledge,
-    //           outputKnowledge = outputKnowledge
-    //         )
-    //         ) yield (entities)
 
     CourseEntity.insertMultiRows(entities)
     val res: Seq[CourseEntity] = CourseEntity.findAll()
@@ -240,51 +186,10 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
 
   "Courses not create, because such UUID exists" in new AutoRollback {
     val id: UUID = UUID.randomUUID()
-
-    val entities: Seq[CourseEntity] = Seq(
-      CourseEntity(
+    val entities: Seq[CourseEntity] = for (i <- 1 to 5)
+      yield CourseEntity(
         id = id,
-        name = "Course1",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course2",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = id,
-        name = "Course3",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course4",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = id,
-        name = "Course5",
+        name = s"Course$i",
         inputSkills = inputSkills,
         outputSkills = outputSkills,
         inputAbilities = inputAbilities,
@@ -292,7 +197,6 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
         inputKnowledge = inputKnowledge,
         outputKnowledge = outputKnowledge
       )
-    )
 
     CourseEntity.insertMultiRows(entities) must throwA[SQLException]
   }
@@ -323,50 +227,10 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
   }
 
   "select all Courses without parameters" in new AutoRollback {
-    val entities: Seq[CourseEntity] = Seq(
-      CourseEntity(
+    val entities: Seq[CourseEntity] = for (i <- 1 to 5)
+      yield CourseEntity(
         id = UUID.randomUUID(),
-        name = "Course1",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course2",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course3",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course4",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course5",
+        name = s"Course$i",
         inputSkills = inputSkills,
         outputSkills = outputSkills,
         inputAbilities = inputAbilities,
@@ -374,7 +238,6 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
         inputKnowledge = inputKnowledge,
         outputKnowledge = outputKnowledge
       )
-    )
 
     CourseEntity.insertMultiRows(entities)
     val res: Seq[CourseEntity] = CourseEntity.findAll()
@@ -384,50 +247,10 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
   }
 
   "select all Courses with limit" in new AutoRollback {
-    val entities: Seq[CourseEntity] = Seq(
-      CourseEntity(
+    val entities: Seq[CourseEntity] = for (i <- 1 to 5)
+      yield CourseEntity(
         id = UUID.randomUUID(),
-        name = "Course1",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course2",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course3",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course4",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course5",
+        name = s"Course$i",
         inputSkills = inputSkills,
         outputSkills = outputSkills,
         inputAbilities = inputAbilities,
@@ -435,7 +258,6 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
         inputKnowledge = inputKnowledge,
         outputKnowledge = outputKnowledge
       )
-    )
 
     CourseEntity.insertMultiRows(entities)
     val res: Seq[CourseEntity] = CourseEntity.findAll(limit = 2)
@@ -446,50 +268,10 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
   }
 
   "select all Courses with all parameters" in new AutoRollback {
-    val entities: Seq[CourseEntity] = Seq(
-      CourseEntity(
+    val entities: Seq[CourseEntity] = for (i <- 1 to 5)
+      yield CourseEntity(
         id = UUID.randomUUID(),
-        name = "Course1",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course2",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course3",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course4",
-        inputSkills = inputSkills,
-        outputSkills = outputSkills,
-        inputAbilities = inputAbilities,
-        outputAbilities = outputAbilities,
-        inputKnowledge = inputKnowledge,
-        outputKnowledge = outputKnowledge
-      ),
-      CourseEntity(
-        id = UUID.randomUUID(),
-        name = "Course5",
+        name = s"Course$i",
         inputSkills = inputSkills,
         outputSkills = outputSkills,
         inputAbilities = inputAbilities,
@@ -497,7 +279,6 @@ object CourseEntityTest extends IBeforeAfterAllDBInit {
         inputKnowledge = inputKnowledge,
         outputKnowledge = outputKnowledge
       )
-    )
 
     CourseEntity.insertMultiRows(entities)
 

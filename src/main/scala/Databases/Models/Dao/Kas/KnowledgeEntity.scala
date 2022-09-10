@@ -59,8 +59,8 @@ object KnowledgeEntity extends IKnowledgeDao {
    * @param session       имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные ключевые слова
    */
-  override def selectKeyWords(knowledgePlug: KnowledgePlug)
-                             (implicit session: DBSession): Seq[KnowledgeKeyWordEntity] = {
+  override def findKeyWords(knowledgePlug: KnowledgePlug)
+                           (implicit session: DBSession): Seq[KnowledgeKeyWordEntity] = {
     withSQL {
       selectFrom(KnowledgeKeyWordEntity as kkw)
         .leftJoin(KnowledgeKeyWordLink as kkwl)
@@ -138,7 +138,7 @@ object KnowledgeEntity extends IKnowledgeDao {
     knowledgePlug.map(plug => KnowledgeEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = KnowledgeEntity.selectKeyWords(plug))
+      keyWords = KnowledgeEntity.findKeyWords(plug))
     )
   }
 
@@ -167,7 +167,7 @@ object KnowledgeEntity extends IKnowledgeDao {
     knowledgePlugs.map(plug => KnowledgeEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = KnowledgeEntity.selectKeyWords(plug))
+      keyWords = KnowledgeEntity.findKeyWords(plug))
     )
   }
 

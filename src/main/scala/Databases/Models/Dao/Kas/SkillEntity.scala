@@ -60,8 +60,8 @@ object SkillEntity extends ISkillDao {
    * @param session   имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные ключевые слова
    */
-  override def selectKeyWords(skillPlug: SkillPlug)
-                             (implicit session: DBSession): Seq[SkillKeyWordEntity] = {
+  override def findKeyWords(skillPlug: SkillPlug)
+                           (implicit session: DBSession): Seq[SkillKeyWordEntity] = {
     withSQL {
       selectFrom(SkillKeyWordEntity as skw)
         .leftJoin(SkillKeyWordLink as skwl)
@@ -139,7 +139,7 @@ object SkillEntity extends ISkillDao {
     skillPlug.map(plug => SkillEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = SkillEntity.selectKeyWords(plug))
+      keyWords = SkillEntity.findKeyWords(plug))
     )
   }
 
@@ -168,7 +168,7 @@ object SkillEntity extends ISkillDao {
     skillPlugs.map(plug => SkillEntity(
       id = plug.id,
       name = plug.name,
-      keyWords = SkillEntity.selectKeyWords(plug))
+      keyWords = SkillEntity.findKeyWords(plug))
     )
   }
 

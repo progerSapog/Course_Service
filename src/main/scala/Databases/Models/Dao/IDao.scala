@@ -100,8 +100,8 @@ sealed trait IKASDao[KASType <: IKASEntity, PlugType <: IPlug] extends IDao[KAST
    * @param dbSession имплисит, позволяющий вызывать метод внутри сессии
    * @return найденные входные навыки
    */
-  def selectKeyWords(plug: PlugType)
-                    (implicit dbSession: DBSession): Seq[IKeyWordEntity]
+  def findKeyWords(plug: PlugType)
+                  (implicit dbSession: DBSession): Seq[IKeyWordEntity]
 
   /**
    * Удаление связей KAS'а и ключевых слов из таблицы связи "имяKAS_keyword_link"
@@ -132,4 +132,3 @@ trait IKnowledgeKeyWordDao extends IKeyWordDao[KnowledgeKeyWordEntity]
 trait IAbilityKeyWordDao extends IKeyWordDao[AbilityKeyWordEntity]
 
 trait ISkillKeyWordDao extends IKeyWordDao[SkillKeyWordEntity]
-
